@@ -32,7 +32,7 @@ class Flight{ // attributes and constructor written By Hubert (13 March 5.15pm)
     if(diverted==0)this.diverted=false;
     else this.diverted=true;
   }
-void setDate(String date) {                   // All set functions written by Luke @ 17:50 13/03/2024
+  void setDate(String date) {                   // All set functions written by Luke @ 17:50 13/03/2024
     this.date = date;
   }
   
