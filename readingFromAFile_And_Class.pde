@@ -176,6 +176,14 @@ class Flight{ // attributes and constructor written By Hubert (13 March 5.15pm)
   void setDistance(int distance) {
     this.distance = distance;
   }
+  
+  void displayInfo() {  // displayInfo method written by Xinyi on 13 March 7.27pm
+        println(date + ", " + MKTCarrier + ", " + MKTCarrierFlNumber + ", " + 
+        origin + ", " + originCity + ", " + originState + ", " + originWac + ", " + 
+        destination + ", " + destinationCity + ", " + destinationState + ", " + 
+        destinationWac + ", " + CRSDepTime + ", " + depTime + ", " + CRSArrTime + ", " + 
+        arrTime + ", " + cancelled + ", " + diverted + ", " + distance);
+  }
 }
 
 ArrayList<Flight> flights = new ArrayList<>();
@@ -199,4 +207,9 @@ void setup(){ // readFromFile algorithm written by Hubert on 13 March 5.15pm
        Integer.parseInt(flightDetails3[9]));
      flights.add(flight);
   }
+
+        for (int i = 0; i < flights.size(); i++) { // diaplayInfo method call written by Xinyi on 13 March 7.31pm
+        Flight flight = flights.get(i);
+        flight.displayInfo();
+    }
 }
