@@ -32,6 +32,79 @@ class Flight{ // attributes and constructor written By Hubert (13 March 5.15pm)
     if(diverted==0)this.diverted=false;
     else this.diverted=true;
   }
+
+   String getDate() {     // getters written by Raid @ 18:15 13/03/2024
+        return date;
+    }
+
+    String getMKTCarrier() {
+        return MKTCarrier;
+    }
+
+    int getMKTCarrierFlNumber() {
+        return MKTCarrierFlNumber;
+    }
+
+    String getOrigin() {
+        return origin;
+    }
+
+    String getOriginCity() {
+        return originCity;
+    }
+
+    String getOriginState() {
+        return originState;
+    }
+
+    int getOriginWac() {
+        return originWac;
+    }
+
+    String getDestination() {
+        return destination;
+    }
+
+    String getDestinationCity() {
+        return destinationCity;
+    }
+
+    String getDestinationState() {
+        return destinationState;
+    }
+
+    int getDestinationWac() {
+        return destinationWac;
+    }
+
+    int getCRSDepTime() {
+        return CRSDepTime;
+    }
+
+    int getDepTime() {
+        return depTime;
+    }
+
+    int getCRSArrTime() {
+        return CRSArrTime;
+    }
+
+    int getArrTime() {
+        return arrTime;
+    }
+
+    int getDistance() {
+        return distance;
+    }
+
+    boolean isCancelled() {
+        return cancelled;
+    }
+
+    boolean isDiverted() {
+        return diverted;
+    }
+
   void setDate(String date) {                   // All set functions written by Luke @ 17:50 13/03/2024
     this.date = date;
   }
