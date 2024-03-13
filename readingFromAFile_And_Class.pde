@@ -1,4 +1,4 @@
-class Flight{
+class Flight{ // attributes and constructor written By Hubert (13 March 5.15pm)
   String date, MKTCarrier, origin, originCity, originState;
   String destination, destinationCity, destinationState;
   int MKTCarrierFlNumber, originWac, destinationWac;
@@ -36,7 +36,7 @@ class Flight{
 
 ArrayList<Flight> flights = new ArrayList<>();
 
-void setup(){ // readFromFile algorithm written by Hubert on 13 March 7.15pm
+void setup(){ // readFromFile algorithm written by Hubert on 13 March 5.15pm
   String[] lines = loadStrings("flights2k.csv");
   for(int i=1; i<lines.length; i++){
      String[] partsLines = lines[i].split("\"");
