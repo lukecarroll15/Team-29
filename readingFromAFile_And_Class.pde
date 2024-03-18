@@ -208,8 +208,40 @@ void setup(){ // readFromFile algorithm written by Hubert on 13 March 5.15pm
      flights.add(flight);
   }
 
-        for (int i = 0; i < flights.size(); i++) { // diaplayInfo method call written by Xinyi on 13 March 7.31pm
+        for (int i = 0; i < flights.size(); i++) { // displayInfo method call written by Xinyi on 13 March 7.31pm
         Flight flight = flights.get(i);
         flight.displayInfo();
     }
+
+int getFlightDistance(String depAirport, String arrAirport) {  // Method written by Luke on 17/03/2024 at 4:00pm to assist with graphical display of data
+  int distance = 0;
+  for (int i = 0; i < flights.size(); i++) {
+    Flight flight = flights.get(i);
+    
+    if (flight.getOrigin().equalsIgnoreCase(depAirport) && flight.getDestination().equalsIgnoreCase(arrAirport)) {
+      distance = flight.getDistance();
+    }
+  }
+  return distance;
+}
+
+int getNumberOfCancelledFlightsByAirport(Flight flight) { // Method written by Luke on 17/03/2024 at 4:00pm to assist with graphical display of data
+  int count = 0;
+  for (int i = 0; i < flights.size(); i++) {
+    if (flight.isCancelled()) {
+      count++;
+    }
+ }
+  return count;
+}
+
+int getNumberOfFlightsByDepAirport(String airport) { // Method written by Luke on 17/03/2024 at 4:00pm to assist with graphical display of data
+  int count = 0;
+  for (int i = 0; i < flights.size(); i++) {
+    Flight flight = flights.get(i);
+    if (flight.getOrigin().equalsIgnoreCase(airport)) count++;
+  }
+  return count;
+}
+
 }
