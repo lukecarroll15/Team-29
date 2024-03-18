@@ -225,13 +225,12 @@ int getFlightDistance(String depAirport, String arrAirport) {  // Method written
   return distance;
 }
 
-int getNumberOfCancelledFlightsByAirport(Flight flight) { // Method written by Luke on 17/03/2024 at 4:00pm to assist with graphical display of data
+int getNumberOfCancelledFlightsByAirport(String airport) {  // Method written by Luke on 16/03/2024 at 2:00pm, edited on 18/03/2024
   int count = 0;
   for (int i = 0; i < flights.size(); i++) {
-    if (flight.isCancelled()) {
-      count++;
-    }
- }
+    Flight flight = flights.get(i);
+    if (flight.getOrigin().equalsIgnoreCase(airport) && flight.isCancelled()) count++;
+  }
   return count;
 }
 
