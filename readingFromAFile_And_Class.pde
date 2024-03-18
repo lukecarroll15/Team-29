@@ -1,6 +1,6 @@
 ArrayList<Flight> flights = new ArrayList<>();
 
-void setup(){ // readFromFile algorithm written by Hubert on 13 March 5.15pm
+void setup(){ // readFromFile algorithm written by Hubert on 13 March 5.15pm, upgraded on 18 March, 2.40pm
   String[] lines = loadStrings("flights_full.csv");
   for(int i=1; i<lines.length; i++){
      String[] partsLines = lines[i].split("\"");
@@ -24,7 +24,7 @@ void setup(){ // readFromFile algorithm written by Hubert on 13 March 5.15pm
   //  Flight flight = flights.get(i);
   //  flight.displayInfo();
   //}
-  print("done");
+  print("done"); //print added to check how fast is loading from the file with all the flights
 }
 
 int getFlightDistance(String depAirport, String arrAirport) {  // Method written by Luke on 17/03/2024 at 4:00pm to assist with graphical display of data
