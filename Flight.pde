@@ -1,4 +1,4 @@
-class Flight{ // attributes and constructor written By Hubert (13 March 5.15pm)
+class Flight{ // attributes and constructor written By Hubert (13 March 5.15pm), class separated by Hubert (18 March, 2.40pm)
   String date, MKTCarrier, origin, originCity, originState;
   String destination, destinationCity, destinationState;
   int MKTCarrierFlNumber, originWac, destinationWac;
