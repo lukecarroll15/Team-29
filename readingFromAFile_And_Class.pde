@@ -1,4 +1,6 @@
+import org.gicentre.utils.stat.*;
 ArrayList<Flight> flights = new ArrayList<>();
+BarChart barChart;
 
 void setup(){ // readFromFile algorithm written by Hubert on 13 March 5.15pm, upgraded on 18 March, 2.40pm
   String[] lines = loadStrings("flights_full.csv");
