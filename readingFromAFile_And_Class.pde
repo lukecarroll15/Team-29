@@ -20,6 +20,37 @@ void setup(){ // readFromFile algorithm written by Hubert on 13 March 5.15pm, up
      flights.add(flight);
   }
 
+  int event=0;  // This variable controls which bar chart to display
+  String[] airports;
+  float[] data = new float[5];
+  switch(event) {
+    case 0: // displays numberOfCancelledFlights by airport
+    airports = new String[] {"JFK", "LAX", "DCA", "FLL", "SEA" };
+    
+    for (int i = 0; i < airports.length; i++) {
+      data[i] = getNumberOfCancelledFlightsByAirport(airports[i]);
+    }
+    createBarChart("Number of Cancelled Flights", "Airport", airports, data, true);
+    break;
+    
+    case 1: // displays numberOfFlights by departure airport
+    airports = new String[] {"JFK", "LAX", "ORD", "HNL", "SEA" };
+    for (int i = 0; i < airports.length; i++) {
+      data[i] = getNumberOfFlightsByDepAirport(airports[i]);
+    }
+    createBarChart("Number of Flights by Airport", "Airport", airports, data, true);
+    break;
+    
+    case 2: // displays number of flights per airline
+    airports = new String[] {"AA", "HA", "NK", "AS", "WN"};
+    for (int i = 0; i < airports.length; i++) {
+      data[i] = getNumberofFlightsByAirline(airports[i]);
+    }
+    createBarChart("Number of Flights by Airline", "Airline", airports, data, true);
+    break;
+  }
+
+
   //for (int i = 0; i < flights.size(); i++) { // displayInfo method call written by Xinyi on 13 March 7.31pm
   //  Flight flight = flights.get(i);
   //  flight.displayInfo();
@@ -56,3 +87,36 @@ int getNumberOfFlightsByDepAirport(String airport) { // Method written by Luke o
   }
   return count;
 }
+
+int getNumberofFlightsByAirline(String MKTCarrier) {
+  int count = 0;
+  for (int i = 0; i < flights.size(); i++) {
+    Flight flight = flights.get(i);
+    if (flight.getMKTCarrier().equalsIgnoreCase(MKTCarrier)) count++;
+  }
+  return count;
+}
+
+void draw() {
+  background(255);
+  barChart.draw(15, 15, width - 30, height - 30);
+}
+
+void createBarChart(String valueAxisLabel, String categoryAxisLabel, String[] category,
+float[] data, boolean transposeAxes) {
+  String[] categories = category;
+  barChart = new BarChart(this);
+  textFont(createFont("Arial Bold",10),10);
+  barChart.setData(data);
+  barChart.setMinValue(0);
+  barChart.setMaxValue(max(data) + 1);
+  barChart.showValueAxis(true);
+  barChart.setBarLabels(categories);
+  barChart.showCategoryAxis(true);
+  barChart.setBarColour(color(235, 52, 52));
+  barChart.setBarGap(9);
+  barChart.transposeAxes(transposeAxes);
+  barChart.setValueAxisLabel(valueAxisLabel);
+  barChart.setCategoryAxisLabel(categoryAxisLabel);
+}
+
