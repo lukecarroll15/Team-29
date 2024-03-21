@@ -33,10 +33,10 @@ BarChart barChart;
   print("done"); //print added to check how fast is loading from the file with all the flights
 }*/
 
-void collectData(){
+void collectData(){ // Function labelled by Hubert, written by Luke on 20/03/2024
   String[] airports;
   float[] data = new float[5];
-  switch(chartVariable) {
+  switch(chartVariable) {  
     case 0: // displays numberOfCancelledFlights by airport
     airports = new String[] {"JFK", "LAX", "DCA", "FLL", "SEA" };
     
@@ -106,7 +106,7 @@ int getNumberofFlightsByAirline(String MKTCarrier) { //method edited by Hubert (
 }
 
 void createBarChart(String valueAxisLabel, String categoryAxisLabel, String[] category,
-float[] data, boolean transposeAxes) {
+float[] data, boolean transposeAxes) {  // Method written by Luke. C on 20/03/2024 at 2:00pm
   String[] categories = category;
   barChart = new BarChart(this);
   textFont(createFont("Arial Bold",10),10);
