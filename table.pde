@@ -19,9 +19,22 @@ void filterData() {
       newRow.setString("Actual Dep", row.getString("DEP_TIME"));
       newRow.setString("Expected Arr", row.getString("CRS_ARR_TIME"));
       newRow.setString("Actual Arr", row.getString("ARR_TIME"));
-      newRow.setInt("Cancelled", row.getInt("CANCELLED"));
-      newRow.setInt("Diverted", row.getInt("DIVERTED"));
+     
+      int cancelled=row.getInt("CANCELLED");                    //change canclled and diverted to string for end user 21/03/2024 Conor Faulkner
+      String cancelledStr = (cancelled == 1) ? "YES" : "NO";
+      
+      int diverted=row.getInt("DIVERTED");
+      String divertedStr = (diverted == 1) ? "YES" : "NO";
+      
+      newRow.setString("Cancelled", cancelledStr);
+      newRow.setString("Diverted", divertedStr);
       newRow.setInt("Distance", row.getInt("DISTANCE"));
+      
+      
+   
+      
+
+
     }
   }
   //println(filteredTable.getRowCount() + " rows in filtered table");
