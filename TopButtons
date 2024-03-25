@@ -1,0 +1,73 @@
+import controlP5.*;
+import g4p_controls.*;
+
+ControlP5 cp5;
+DropdownList date;
+Slider flightDistanceSlider;
+Textfield flightNumberField;
+double selectedFlightDistance;
+
+void setup()
+{
+  size(1000, 800);
+  
+  cp5 = new ControlP5(this);
+  
+  date = cp5.addDropdownList("Select Date")
+        .setPosition(100,20)
+        ;
+        
+        customise(date);
+        
+               
+  flightNumberField = cp5.addTextfield("Flight Number")
+     .setValue(0)
+     .setPosition(225, 20)
+     .setSize(100,25)
+     ;
+     
+  flightDistanceSlider = cp5.addSlider("Flight Distance")
+     .setPosition(350, 20)
+     .setSize(200,25)
+     .setRange(0,2000)
+     .setValue(0)
+     ;
+     
+  selectedFlightDistance = flightDistanceSlider.getValue();
+  
+  cp5.addBang("Submit")
+    .setPosition(700, 20)
+      .setSize(80, 40)
+        .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+          ;   
+}
+
+void draw()
+{
+  background(0);
+}
+
+void customise(DropdownList date)
+{
+  date.setItemHeight(20);
+  date.setBarHeight(25);
+  for (int i = 1; i <= 31; i++) {
+    date.addItem("" + i, i);
+  }
+}
+
+double getSelectedFlightDistance()
+{
+  return flightDistanceSlider.getValue();
+}
+
+String getEnteredFlightNumber()
+{
+  return flightNumberField.getText();
+}
+
+void Submit() {
+  double selectedDistance = cp5.get(Slider.class,"Flight Distance").getValue();
+  String enteredFlightNumber  = cp5.get(Textfield.class,"Flight Number").getText();
+  float selectedDate = cp5.get(DropdownList.class,"Select Date").getValue();  
+}
