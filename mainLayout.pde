@@ -57,7 +57,7 @@ flightNumberField = control.addTextfield("Flight Number")  // Created by Luke C 
 flightDistanceSlider = control.addSlider("Flight Distance")  // Created by Luke C on 25/03 at 4:00pm
      .setPosition(350, 20)
      .setSize(200,25)
-     .setRange(0,2000)
+     .setRange(0,4000)
      .setValue(0)
      ;
 
