@@ -1,5 +1,6 @@
 //mainLayout created by Hubert on 20 March 7.40pm (with some of the blocks of code taken from the other files to the setup method)
 import controlP5.*;
+import g4p_controls.*;
 
 int tableVariable=0, chartVariable=0, showingAreaX=150, showingAreaY=250,
   showingAreaWidth=700, showingAreaHeight=550;
@@ -14,6 +15,10 @@ Controller controller;
 Button switchGraph;
 Button arrowUp;
 Button arrowDown;
+DropdownList dateSelector;
+Slider flightDistanceSlider;
+Textfield flightNumberField;
+
 
 void setup(){
   originalTable = loadTable("flights_full.csv", "header");
@@ -37,6 +42,30 @@ void setup(){
     .setPosition(700,200).setSize(70,40);
   arrowDown = control.addButton("arrowDown").setValue(3)
     .setPosition(800,200).setSize(70,40);
+
+ dateSelector = cp5.addDropdownList("Select Date") // Created by Luke C on 25/03 at 4:00pm
+        .setPosition(100,20)
+        ;
+        customise(dateSelector);
+      
+flightNumberField = cp5.addTextfield("Flight Number")  // Created by Luke C on 25/03 at 4:00pm
+     .setValue(0)
+     .setPosition(225, 20)
+     .setSize(100,25)
+     ;
+     
+flightDistanceSlider = cp5.addSlider("Flight Distance")  // Created by Luke C on 25/03 at 4:00pm
+     .setPosition(350, 20)
+     .setSize(200,25)
+     .setRange(0,2000)
+     .setValue(0)
+     ;
+
+cp5.addBang("Submit")  // Created by Luke C on 25/03 at 4:00pm
+    .setPosition(700, 20)
+      .setSize(80, 40)
+        .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+          ;   
 }
 
 /*public void controlEvent(ControlEvent theEvent){ different way to make buttons work
@@ -58,6 +87,24 @@ void arrowUp(){
 void arrowDown(){
   chartVariable--;
   if(chartVariable==-1)chartVariable=2;
+}
+
+void customise(DropdownList date) // Created by Luke C on 25/03 at 4:00pm
+{
+  date.setItemHeight(20);
+  date.setBarHeight(25);
+  for (int i = 1; i <= 31; i++) {
+    if (i == 1) {
+      date.addItem("N/A", i);
+    }
+    date.addItem("" + i, i);
+  }
+}
+
+void Submit() {  // Created by Luke C on 25/03 at 4:00pm
+  double selectedDistance = cp5.get(Slider.class,"Flight Distance").getValue();
+  String enteredFlightNumber  = cp5.get(Textfield.class,"Flight Number").getText();
+  float selectedDate = cp5.get(DropdownList.class,"Select Date").getValue();  
 }
 
 void draw(){
