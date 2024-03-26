@@ -2,6 +2,7 @@
 import controlP5.*;
 import g4p_controls.*;
 
+
 int tableVariable=0, chartVariable=0, showingAreaX=150, showingAreaY=250,
   showingAreaWidth=700, showingAreaHeight=550;
 String[] customHeaders;
@@ -18,6 +19,8 @@ Button arrowDown;
 DropdownList dateSelector;
 Slider flightDistanceSlider;
 Textfield flightNumberField;
+
+
 
 
 void setup(){
@@ -64,8 +67,16 @@ flightDistanceSlider = control.addSlider("Flight Distance")  // Created by Luke 
 control.addBang("Submit")  // Created by Luke C on 25/03 at 4:00pm
     .setPosition(700, 20)
       .setSize(80, 40)
-        .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-          ;   
+        .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+  
+      
+              scrollbarPosX = showingAreaX+cellWidth*customHeaders.length;
+              scrollbarPosY = showingAreaY;
+              scrollbarWidth = 20;
+              scrollbarHeight = showingAreaHeight;
+              
+              sliderPosY = scrollbarPosY;
+              sliderHeight = 50;        
 }
 
 /*public void controlEvent(ControlEvent theEvent){ different way to make buttons work
@@ -111,12 +122,15 @@ void draw(){
   background(200);
   switch(tableVariable){
     case 0:
-      drawHeaders(customHeaders);
-      drawTableData(filteredTable);
+    drawHeaders(customHeaders);
+    drawTableData(filteredTable, startRow, visibleRows);
+    drawScrollbar();
       break;
     case 1:
       collectData();
       barChart.draw(showingAreaX, showingAreaY, showingAreaWidth, 
         showingAreaHeight);
+        break;
   }
+ 
 }

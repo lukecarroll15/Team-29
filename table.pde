@@ -3,6 +3,12 @@ Table filteredTable;
 int cellWidth = showingAreaWidth/9;
 int cellHeight = showingAreaHeight/15;
 
+
+int startRow = 0;
+int visibleRows = 14; 
+
+
+
 void filterData() {
   for (TableRow row : originalTable.rows()) {
     String originAirport = row.getString("ORIGIN");
@@ -60,23 +66,44 @@ void drawHeaders(String[] headers) {
     showingAreaX+cellWidth*headers.length, showingAreaY+showingAreaHeight);
 }
 
-void drawTableData(Table data) {
+void drawTableData(Table data, int startRow, int visibleRows) {
   textAlign(CENTER, CENTER);
   textSize(10);
   fill(255); 
-  int rowIndex = 0;
-  for (TableRow row : data.rows()) {
-    for (int col = 0; col < data.getColumnCount(); col++) {
-      String dataStr = row.getString(col);
-      text(dataStr, showingAreaX+col * cellWidth + cellWidth/2, 
-        showingAreaY+(rowIndex + 1) * cellHeight + cellHeight/2);
-      line(showingAreaX+col * cellWidth, showingAreaY+(rowIndex + 1) * cellHeight, 
-        showingAreaX+(col + 1) * cellWidth, 
-        showingAreaY+(rowIndex + 1) * cellHeight);
+ // int rowIndex = 0;
+  for (int i = 0; i < visibleRows; i++/*TableRow row : data.rows()*/) {
+    int rowIndex = startRow + i;
+    if(rowIndex >= 0 && rowIndex < data.getRowCount()){
+      for (int col = 0; col < data.getColumnCount(); col++) {
+        TableRow row = data.getRow(rowIndex);
+        String dataStr = row.getString(col);
+        text(dataStr, showingAreaX+col * cellWidth + cellWidth/2, 
+          showingAreaY+(i + 1) * cellHeight + cellHeight/2);
+        line(showingAreaX+col * cellWidth, showingAreaY+(i + 1) * cellHeight, 
+          showingAreaX+(col + 1) * cellWidth, 
+          showingAreaY+(i + 1) * cellHeight);
+      }
+      line(showingAreaX, showingAreaY+(i + 1) * cellHeight, 
+        showingAreaX+cellWidth*customHeaders.length, 
+        showingAreaY+(i + 1) * cellHeight);
+    //rowIndex++;
     }
-    line(showingAreaX, showingAreaY+(rowIndex + 1) * cellHeight, 
-      showingAreaX+cellWidth*customHeaders.length, 
-      showingAreaY+(rowIndex + 1) * cellHeight);
-    rowIndex++;
   }
+  line(showingAreaX, showingAreaY+15*cellHeight,
+        showingAreaX+cellWidth*customHeaders.length,
+        showingAreaY+15*cellHeight);
+}
+
+
+
+void keyPressed() {  //keyPressed method to scroll table method writen by Xinyi on 26/03/2024 at 22:50
+  if (keyCode == UP) {
+    startRow = max(0, startRow - 1); 
+
+  } else if (keyCode == DOWN) {
+    startRow = min(filteredTable.getRowCount() - visibleRows, startRow + 1);
+  }
+  
+  sliderPosY = int(map(startRow, 0, filteredTable.getRowCount() - visibleRows, 
+                    scrollbarPosY, scrollbarPosY + scrollbarHeight - sliderHeight));
 }
