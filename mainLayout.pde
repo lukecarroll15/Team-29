@@ -43,25 +43,25 @@ void setup(){
   arrowDown = control.addButton("arrowDown").setValue(3)
     .setPosition(800,200).setSize(70,40);
 
- dateSelector = cp5.addDropdownList("Select Date") // Created by Luke C on 25/03 at 4:00pm
+ dateSelector = control.addDropdownList("Select Date") // Created by Luke C on 25/03 at 4:00pm
         .setPosition(100,20)
         ;
         customise(dateSelector);
       
-flightNumberField = cp5.addTextfield("Flight Number")  // Created by Luke C on 25/03 at 4:00pm
+flightNumberField = control.addTextfield("Flight Number")  // Created by Luke C on 25/03 at 4:00pm
      .setValue(0)
      .setPosition(225, 20)
      .setSize(100,25)
      ;
      
-flightDistanceSlider = cp5.addSlider("Flight Distance")  // Created by Luke C on 25/03 at 4:00pm
+flightDistanceSlider = control.addSlider("Flight Distance")  // Created by Luke C on 25/03 at 4:00pm
      .setPosition(350, 20)
      .setSize(200,25)
      .setRange(0,2000)
      .setValue(0)
      ;
 
-cp5.addBang("Submit")  // Created by Luke C on 25/03 at 4:00pm
+control.addBang("Submit")  // Created by Luke C on 25/03 at 4:00pm
     .setPosition(700, 20)
       .setSize(80, 40)
         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
@@ -102,9 +102,9 @@ void customise(DropdownList date) // Created by Luke C on 25/03 at 4:00pm
 }
 
 void Submit() {  // Created by Luke C on 25/03 at 4:00pm
-  double selectedDistance = cp5.get(Slider.class,"Flight Distance").getValue();
-  String enteredFlightNumber  = cp5.get(Textfield.class,"Flight Number").getText();
-  float selectedDate = cp5.get(DropdownList.class,"Select Date").getValue();  
+  double selectedDistance = control.get(Slider.class,"Flight Distance").getValue();
+  String enteredFlightNumber  = control.get(Textfield.class,"Flight Number").getText();
+  float selectedDate = control.get(DropdownList.class,"Select Date").getValue();  
 }
 
 void draw(){
