@@ -87,19 +87,24 @@ control.addBang("Submit")  // Created by Luke C on 25/03 at 4:00pm
 
 void switchGraph(){
   tableVariable++;
-  if(tableVariable==2)tableVariable=0;
+  if(tableVariable==3)tableVariable=0;
 }
 
 void arrowUp(){
   chartVariable++;
+  if(tableVariable == 2){
+    if(chartVariable==2)chartVariable=0;
+  }
   if(chartVariable==3)chartVariable=0;
 }
 
 void arrowDown(){
   chartVariable--;
   if(chartVariable==-1)chartVariable=2;
+    if(tableVariable == 2){
+    if(chartVariable==-1)chartVariable=1;
+  }
 }
-
 void customise(DropdownList date) // Created by Luke C on 25/03 at 4:00pm
 {
   date.setItemHeight(20);
@@ -131,6 +136,12 @@ void draw(){
       barChart.draw(showingAreaX, showingAreaY, showingAreaWidth, 
         showingAreaHeight);
         break;
+   case 2:
+     pieChart.getFigures(filteredTable,chartVariable);
+     pieChart.calculateAngles(chartVariable);
+     pieChart.drawPieChart(chartVariable, showingAreaX,
+                             showingAreaY, showingAreaWidth, showingAreaHeight);
+     break;
   }
  
 }
