@@ -1,11 +1,13 @@
-//mainLayout created by Hubert on 20 March 7.40pm (with some of the blocks of code taken from the other files to the setup method)
+//mainLayout created by Hubert on 20 March 7.40pm (with some of the blocks of code taken from the other files to the setup method), edited on 27 March 11.00pm
 import controlP5.*;
 import g4p_controls.*;
 
 
 int tableVariable=0, chartVariable=0, showingAreaX=150, showingAreaY=250,
-  showingAreaWidth=700, showingAreaHeight=550;
+  showingAreaWidth=700, showingAreaHeight=500;
 String[] customHeaders;
+ArrayList<PVector> data;
+HashMap<String, Integer> table;
 
 void settings(){
   size(1000, 800);
@@ -20,9 +22,6 @@ DropdownList dateSelector;
 Slider flightDistanceSlider;
 Textfield flightNumberField;
 
-
-
-
 void setup(){
   originalTable = loadTable("flights_full.csv", "header");
   customHeaders = new String[]{"Date", /*"Flight Number", "Origin Airport",*/ 
@@ -33,9 +32,22 @@ void setup(){
   for (String header : customHeaders) {
     filteredTable.addColumn(header);
   }
+ 
+  filterData(3000,22,"");
+ 
+  dataHeatMap = new ArrayList<PVector>();
+
+  // Sample data generation random for now (Replace with flight data from the CSV file later)
+  for (int i = 0; i < 100000; i++) {
+    dataHeatMap.add(new PVector(floor(random(5, 55)), floor(random(0, 30))));
+  }
+
+  tableHeatMap = new HashMap<String, Integer>();
 
  
-  filterData();
+  for (PVector v : dataHeatMap) {
+    addOrUpdate(v);
+  }
   
   control = new ControlP5(this);
   
@@ -64,7 +76,7 @@ flightDistanceSlider = control.addSlider("Flight Distance")  // Created by Luke 
      .setValue(0)
      ;
 
-control.addBang("Submit")  // Created by Luke C on 25/03 at 4:00pm
+control.addButton("Submit")  // Created by Luke C on 25/03 at 4:00pm
     .setPosition(700, 20)
       .setSize(80, 40)
         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
@@ -92,19 +104,14 @@ void switchGraph(){
 
 void arrowUp(){
   chartVariable++;
-  if(tableVariable == 2){
-    if(chartVariable==2)chartVariable=0;
-  }
   if(chartVariable==3)chartVariable=0;
 }
 
 void arrowDown(){
   chartVariable--;
   if(chartVariable==-1)chartVariable=2;
-    if(tableVariable == 2){
-    if(chartVariable==-1)chartVariable=1;
-  }
 }
+
 void customise(DropdownList date) // Created by Luke C on 25/03 at 4:00pm
 {
   date.setItemHeight(20);
@@ -120,28 +127,36 @@ void customise(DropdownList date) // Created by Luke C on 25/03 at 4:00pm
 void Submit() {  // Created by Luke C on 25/03 at 4:00pm
   double selectedDistance = control.get(Slider.class,"Flight Distance").getValue();
   String enteredFlightNumber  = control.get(Textfield.class,"Flight Number").getText();
-  float selectedDate = control.get(DropdownList.class,"Select Date").getValue();  
+  int selectedDate = (int)control.get(DropdownList.class,"Select Date").getValue(); 
+  println("distance: " + selectedDistance + ", date: " + selectedDate + ", flight number: " + enteredFlightNumber);
+  if(tableVariable==0){
+    filteredTable = new Table();
+    for (String header : customHeaders) {
+      filteredTable.addColumn(header);
+    }
+    filterData(selectedDistance, selectedDate, enteredFlightNumber);
+    drawHeaders(customHeaders);
+    drawTableData(filteredTable, startRow, visibleRows);
+    drawScrollbar();
+  }
 }
 
 void draw(){
   background(200);
   switch(tableVariable){
     case 0:
-    drawHeaders(customHeaders);
-    drawTableData(filteredTable, startRow, visibleRows);
-    drawScrollbar();
+      drawHeaders(customHeaders);
+      drawTableData(filteredTable, startRow, visibleRows);
+      drawScrollbar();
       break;
     case 1:
       collectData();
       barChart.draw(showingAreaX, showingAreaY, showingAreaWidth, 
         showingAreaHeight);
-        break;
-   case 2:
-     pieChart.getFigures(filteredTable,chartVariable);
-     pieChart.calculateAngles(chartVariable);
-     pieChart.drawPieChart(chartVariable, showingAreaX,
-                             showingAreaY, showingAreaWidth, showingAreaHeight);
-     break;
+      break;
+    case 2:
+      generateHeatmap();
+      break;
   }
  
 }
