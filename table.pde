@@ -7,20 +7,32 @@ int cellHeight = showingAreaHeight/15;
 int startRow = 0;
 int visibleRows = 14; 
 
-
-
-void filterData() {
+void filterData(double distance, int date, String flightNumber) {
+  //print(distance+" "+date+" "+flightNumber);
   for (TableRow row : originalTable.rows()) {
-    String originAirport = row.getString("ORIGIN");
-    if (originAirport.equalsIgnoreCase("HNL")) {
-      TableRow newRow = filteredTable.addRow();
-      newRow.setString("Date", row.getString("FL_DATE"));
+    //print(row.getString("FL_DATE"));
+    if(distance<=row.getDouble("DISTANCE") 
+      && (date==0 || ("1/"+date+"/2022 12:00:00 AM").equals(row.getString("FL_DATE")))                   //if statement and combination with string written by Hubert on March 27 11.00pm
+      && (flightNumber.equals("") || flightNumber.equals(row.getString("MKT_CARRIER") + 
+      row.getString("MKT_CARRIER_FL_NUM")))){
+        //println("distance: " + distance + ", date: " + date + ", flight number: " + flightNumber);
+      TableRow newRow = filteredTable.addRow();                                                        
+      String dateTable = row.getString("FL_DATE");
+      String[] dateParts = dateTable.split(" ");
+      String insertDate = dateParts[0] + "\n" + dateParts[1] + dateParts[2];
+      newRow.setString("Date", insertDate);
       //newRow.setString("Flight Number", row.getString("MKT_CARRIER") + 
       //  row.getString("MKT_CARRIER_FL_NUM"));
       //newRow.setString("Origin Airport", originAirport);
-      newRow.setString("Origin City", row.getString("ORIGIN_CITY_NAME"));
+      String origTable = row.getString("ORIGIN_CITY_NAME");
+      String[] origParts = origTable.split(", ");
+      String insertOrig = origParts[0] + ",\n" + origParts[1];
+      newRow.setString("Origin City", insertOrig);
       //newRow.setString("Dest Airport", row.getString("DEST"));
-      newRow.setString("Dest City", row.getString("DEST_CITY_NAME"));
+      String destTable = row.getString("DEST_CITY_NAME");
+      String[] destParts = destTable.split(", ");
+      String insertDest = destParts[0] + ",\n" + destParts[1];
+      newRow.setString("Dest City", insertDest);
       newRow.setString("Expected Dep", row.getString("CRS_DEP_TIME"));
       newRow.setString("Actual Dep", row.getString("DEP_TIME"));
       newRow.setString("Expected Arr", row.getString("CRS_ARR_TIME"));
@@ -34,16 +46,11 @@ void filterData() {
       
       newRow.setString("Cancelled", cancelledStr);
       newRow.setString("Diverted", divertedStr);
-      newRow.setInt("Distance", row.getInt("DISTANCE"));
+      newRow.setInt("Distance", (int)row.getDouble("DISTANCE"));
       
-      
-   
-      
-
-
     }
   }
-  //println(filteredTable.getRowCount() + " rows in filtered table");
+  println(filteredTable.getRowCount() + " rows in filtered table");
 }
 
 void drawHeaders(String[] headers) {
