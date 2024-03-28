@@ -21,8 +21,8 @@ void filterData(double distance, int date, String flightNumber) {
       String[] dateParts = dateTable.split(" ");
       String insertDate = dateParts[0] + "\n" + dateParts[1] + dateParts[2];
       newRow.setString("Date", insertDate);
-      //newRow.setString("Flight Number", row.getString("MKT_CARRIER") + 
-      //  row.getString("MKT_CARRIER_FL_NUM"));
+      newRow.setString("Flight Number", row.getString("MKT_CARRIER") + 
+    row.getString("MKT_CARRIER_FL_NUM"));
       //newRow.setString("Origin Airport", originAirport);
       String origTable = row.getString("ORIGIN_CITY_NAME");
       String[] origParts = origTable.split(", ");
