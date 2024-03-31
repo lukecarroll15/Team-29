@@ -30,8 +30,43 @@ DropdownList airportDropdown;
 DropdownList originCityDropdown; // Dropdown for Origin City
 DropdownList destCityDropdown; // Dropdown for Destination City
 
+ArrayList<String> airportsList;
+ArrayList<String> originCityList;
+ArrayList<String> destCityList;
+ArrayList<String> destAirportsList; 
+
+String[] top5DestinationCities;
+int[] top5DestinationFrequency;
+
+String[] top5OriginCities;
+int[] top5ArrivalsFrequency;
+
+String[] top5DestinationsCancelled;
+int[] top5CancelledFrequency;
+
+String[] top5DestinationsDiverted;
+int[] top5DivertedFrequency;
+
+String[] top5LongestFlightsCity;
+int[] top5LongestFlightsDistance;
+
 
 void setup(){
+  top5DestinationCities = new String[5];
+  top5DestinationFrequency = new int[5];
+
+  top5OriginCities = new String[5];
+  top5ArrivalsFrequency = new int[5];
+
+  top5DestinationsCancelled = new String[5];
+  top5CancelledFrequency = new int[5];
+
+  top5DestinationsDiverted = new String[5];
+  top5DivertedFrequency = new int[5];
+
+  top5LongestFlightsCity = new String[5];
+  top5LongestFlightsDistance = new int[5];
+  
   originalTable = loadTable("flights_full.csv", "header");
   customHeaders = new String[]{"Date", "Flight Number",/* "Origin Airport",*/ 
     "Origin City", /*"Dest Airport",*/ "Dest City", "Expected Dep", "Actual Dep", 
@@ -42,7 +77,7 @@ void setup(){
     filteredTable.addColumn(header);
   }
  
-  filterData(3000,22,"");
+  filterData(3000,22,"","","","","");
  
   dataHeatMap = new ArrayList<PVector>();
 
@@ -61,10 +96,10 @@ void setup(){
   control = new ControlP5(this);
   
     // Initialize ArrayLists to store unique airport names, origin cities, and destination cities
-  ArrayList<String> airportsList = new ArrayList<String>();
-  ArrayList<String> originCityList = new ArrayList<String>();
-  ArrayList<String> destCityList = new ArrayList<String>();
-  ArrayList<String> destAirportsList = new ArrayList<String>();   
+  airportsList = new ArrayList<String>();
+  originCityList = new ArrayList<String>();
+  destCityList = new ArrayList<String>();
+  destAirportsList = new ArrayList<String>();   
 
   // Iterate through the table to extract unique airport names, origin cities, and destination cities
   for (TableRow row : originalTable.rows()) {
@@ -88,17 +123,25 @@ void setup(){
   }
 
  // Convert ArrayLists to String arrays and sort alphabetically
+  airportsList.add(0, "'N/A'");
   airportsArray = airportsList.toArray(new String[0]);
   Arrays.sort(airportsArray);
+  airportsList.remove(0);
 
+  originCityList.add(0, "'N/A'");
   originCityArray = originCityList.toArray(new String[0]);
   Arrays.sort(originCityArray);
+  originCityList.remove(0);
 
+  destCityList.add(0, "'N/A'");
   destCityArray = destCityList.toArray(new String[0]);
   Arrays.sort(destCityArray);
+  destCityList.remove(0);
   
+  destAirportsList.add(0, "'N/A'");
   destAirportsArray = destAirportsList.toArray(new String[0]);
-  Arrays.sort(destAirportsArray); 
+  Arrays.sort(destAirportsArray);
+  destAirportsList.remove(0);
   
   
   // Add dropdown lists for Origin Airport,Dest Aiport, Origin City, and Destination City
@@ -203,26 +246,212 @@ void customise(DropdownList date) // Created by Luke C on 25/03 at 4:00pm
   }
 }
 
-void Submit() {  // Created by Luke C on 25/03 at 4:00pm
+void Submit() {  // Created by Luke C on 25/03 at 4:00pm, modified by Hubert on 31 March 7.45pm
   double selectedDistance = control.get(Slider.class,"Flight Distance").getValue();
   String enteredFlightNumber  = control.get(Textfield.class,"Flight Number").getText();
-  int selectedDate = (int)control.get(DropdownList.class,"Select Date").getValue(); 
-  String selectedOriginAirport = airportDropdown.getItem((int)airportDropdown.getValue()).toString();
-  String selectedOriginCity = originCityDropdown.getItem((int)originCityDropdown.getValue()).toString();
-  String selectedDestAirport = destAirportDropdown.getItem((int)destAirportDropdown.getValue()).toString();
-  String selectedDestCity = destCityDropdown.getItem((int)destCityDropdown.getValue()).toString();
+  int selectedDate = (int)control.get(DropdownList.class,"Select Date").getValue();
+  
+  String selectedOriginAirport = "";
+  if((int)control.get(DropdownList.class, "Origin Airport").getValue()!=0){ 
+    selectedOriginAirport = airportsArray[(int)control.get(DropdownList.class, "Origin Airport").getValue()];
+    top5LongestFlightsFrom(selectedOriginAirport);
+    top5DestinationsDivertedFrom(selectedOriginAirport);
+    top5DestinationCancelledFrom(selectedOriginAirport);
+    top5DestinationsFrom(selectedOriginAirport);
+  }
+    
+  String selectedOriginCity = ""; 
+  if((int)control.get(DropdownList.class, "Origin City").getValue()!=0) 
+    selectedOriginCity = originCityArray[(int)control.get(DropdownList.class, "Origin City").getValue()];
+    
+  String selectedDestAirport = "";
+  if((int)control.get(DropdownList.class, "Destination Airport").getValue()!=0){
+    selectedDestAirport = destAirportsArray[(int)control.get(DropdownList.class, "Destination Airport").getValue()];
+    top5ArrivalsTo(selectedDestAirport);
+  }
+  
+  String selectedDestCity = "";
+  if((int)control.get(DropdownList.class, "Destination City").getValue()!=0)
+    selectedDestCity = destCityArray[(int)control.get(DropdownList.class, "Destination City").getValue()];
 
-  println("distance: " + selectedDistance + ", date: " + selectedDate + ", flight number: " + enteredFlightNumber);
+  /*println("distance: " + selectedDistance + ",\ndate: " + selectedDate + 
+    ",\nflight number: " + enteredFlightNumber + ",\norigin airport: " + 
+    selectedOriginAirport + ",\norigin city: " + selectedOriginCity + 
+    ",\ndestination airport: " + selectedDestAirport + ",\ndestination city: " +
+    selectedDestCity);*/
+    
+  /*for(int i=0; i<top5DestinationFrequency.length; i++){
+    println(i + ". " + top5DestinationCities[i] + ", " + top5DestinationFrequency[i]);
+  }
+  
+  println();
+  
+  for(int i=0; i<top5ArrivalsFrequency.length; i++){
+    println(i + ". " + top5OriginCities[i] + ", " + top5ArrivalsFrequency[i]);
+  }
+  
+  println();
+  
+  for(int i=0; i<top5CancelledFrequency.length; i++){
+    println(i + ". " + top5DestinationsCancelled[i] + ", " + top5CancelledFrequency[i]);
+  }
+  
+  println();
+  
+  for(int i=0; i<top5DivertedFrequency.length; i++){
+    println(i + ". " + top5DestinationsDiverted[i] + ", " + top5DivertedFrequency[i]);
+  }
+  
+  println();
+  
+  for(int i=0; i<top5LongestFlightsDistance.length; i++){
+    println(i + ". " + top5LongestFlightsCity[i] + ", " + top5LongestFlightsDistance[i]);
+  }*/
+
   if(tableVariable==0){
     filteredTable = new Table();
     for (String header : customHeaders) {
       filteredTable.addColumn(header);
     }
-    filterData(selectedDistance, selectedDate, enteredFlightNumber);
+    filterData(selectedDistance, selectedDate, enteredFlightNumber, selectedOriginAirport, 
+      selectedOriginCity, selectedDestAirport, selectedDestCity);
     drawHeaders(customHeaders);
     drawTableData(filteredTable, startRow, visibleRows);
     drawScrollbar();
   }
+}
+
+void top5DestinationsFrom(String originAirport){ //method written by Hubert on 31 March at 8.30pm
+  int[] frequencies = new int[destCityList.size()];
+  for (TableRow row : originalTable.rows()) {
+    if(originAirport.equals(row.getString("ORIGIN")))
+    {
+      for(int i=0; i<destCityList.size(); i++){
+          if(destCityList.get(i).equals(row.getString("DEST_CITY_NAME"))){
+            frequencies[i]++;
+            break;
+          }
+      }
+    }
+  }
+  String[] destCityArray = destCityList.toArray(new String[0]);
+  String[][] top5Destinations = first5SelectionSort(destCityArray, frequencies);
+  top5DestinationCities = new String[5];
+  top5DestinationCities = top5Destinations[0];
+  top5DestinationFrequency = new int[5];
+  for(int i=0; i<5; i++){
+    top5DestinationFrequency[i] = Integer.parseInt(top5Destinations[1][i]);
+  }
+}
+
+void top5ArrivalsTo(String destAirport){ //method written by Hubert on 31 March at 8.40pm
+  int[] frequencies = new int[originCityList.size()];
+  for (TableRow row : originalTable.rows()) {
+    if(destAirport.equals(row.getString("DEST")))
+    {
+      for(int i=0; i<originCityList.size(); i++){
+          if(originCityList.get(i).equals(row.getString("ORIGIN_CITY_NAME"))){
+            frequencies[i]++;
+            break;
+          }
+      }
+    }
+  }
+  String[] originCityArray = originCityList.toArray(new String[0]);
+  String[][] top5Arrivals = first5SelectionSort(originCityArray, frequencies);
+  top5OriginCities = new String[5];
+  top5OriginCities = top5Arrivals[0];
+  top5ArrivalsFrequency = new int[5];
+  for(int i=0; i<5; i++){
+    top5ArrivalsFrequency[i] = Integer.parseInt(top5Arrivals[1][i]);
+  }
+}
+
+void top5DestinationCancelledFrom(String originAirport){ //method written by Hubert on 31 March 8.45pm
+  int[] frequencies = new int[destCityList.size()];
+  for (TableRow row : originalTable.rows()) {
+    if(originAirport.equals(row.getString("ORIGIN")) && row.getDouble("CANCELLED")==1)
+    {
+      for(int i=0; i<destCityList.size(); i++){
+          if(destCityList.get(i).equals(row.getString("DEST_CITY_NAME"))){
+            frequencies[i]++;
+            break;
+          }
+      }
+    }
+  }
+  String[] destCityArray = destCityList.toArray(new String[0]);
+  String[][] top5Cancelled = first5SelectionSort(destCityArray, frequencies);
+  top5DestinationsCancelled = new String[5];
+  top5DestinationsCancelled = top5Cancelled[0];
+  top5CancelledFrequency = new int[5];
+  for(int i=0; i<5; i++){
+    top5CancelledFrequency[i] = Integer.parseInt(top5Cancelled[1][i]);
+  }
+}
+
+void top5DestinationsDivertedFrom(String originAirport){ //method written by Hubert on 31 March at 8.50pm
+  int[] frequencies = new int[destCityList.size()];
+  for (TableRow row : originalTable.rows()) {
+    if(originAirport.equals(row.getString("ORIGIN")) && row.getDouble("DIVERTED")==1)
+    {
+      for(int i=0; i<destCityList.size(); i++){
+          if(destCityList.get(i).equals(row.getString("DEST_CITY_NAME"))){
+            frequencies[i]++;
+            break;
+          }
+      }
+    }
+  }
+  String[] destCityArray = destCityList.toArray(new String[0]);
+  String[][] top5Diverted = first5SelectionSort(destCityArray, frequencies);
+  top5DestinationsDiverted = new String[5];
+  top5DestinationsDiverted = top5Diverted[0];
+  top5DivertedFrequency = new int[5];
+  for(int i=0; i<5; i++){
+    top5DivertedFrequency[i] = Integer.parseInt(top5Diverted[1][i]);
+  }
+}
+
+void top5LongestFlightsFrom(String originAirport){ //method written by Hubert on 31 March at 9.15pm
+  ArrayList<String> theLongestFlightsCity = new ArrayList<>();
+  ArrayList<Integer> theLongestFlightsDistance = new ArrayList<>();
+  for (TableRow row : originalTable.rows()) {
+    if(originAirport.equals(row.getString("ORIGIN")))
+    {
+      //println(row.getString("DEST_CITY_NAME"));
+      if(!theLongestFlightsCity.contains(row.getString("DEST_CITY_NAME"))){
+        theLongestFlightsDistance.add((int)row.getDouble("DISTANCE"));
+        theLongestFlightsCity.add(row.getString("DEST_CITY_NAME"));
+        //println(row.getString("DEST_CITY_NAME"));
+      }
+    }
+  }
+  //print(theLongestFlightsCity);
+  String[] theLongestFlights = theLongestFlightsCity.toArray(new String[0]);
+  int[] theLongestDistance = theLongestFlightsDistance.stream().mapToInt(i -> i).toArray();
+  String[][] top5Distances = first5SelectionSort(theLongestFlights, theLongestDistance);
+  top5LongestFlightsCity = new String[5];
+  top5LongestFlightsCity = top5Distances[0];
+  top5LongestFlightsDistance = new int[5];
+  for(int i=0; i<theLongestFlightsDistance.size() && i<5; i++){
+    top5LongestFlightsDistance[i] = Integer.parseInt(top5Distances[1][i]);
+  }
+}
+
+String[][] first5SelectionSort(String[] destinations, int[] frequencies){ //sorting algorithm written by Hubert on 31 March at 8.20pm
+  String[][] result = new String[2][5];
+  for(int i=0; i<5 && i<frequencies.length; i++){
+    int index=i;
+    for(int j=i; j<frequencies.length; j++){
+      if(frequencies[j]>frequencies[index])index=j;
+    }
+    result[1][i] = String.valueOf(frequencies[index]);
+    frequencies[index] = frequencies[i];
+    result[0][i] = destinations[index];
+    destinations[index] = destinations[i];
+  }
+  return result;
 }
 
 void draw(){
