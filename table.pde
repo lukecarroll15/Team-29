@@ -7,32 +7,40 @@ int cellHeight = showingAreaHeight/15;
 int startRow = 0;
 int visibleRows = 14; 
 
-void filterData(double distance, int date, String flightNumber) {
+void filterData(double distance, int date, String flightNumber, String originAirport, 
+  String originCity, String destAirport, String destCity) {
   //print(distance+" "+date+" "+flightNumber);
   for (TableRow row : originalTable.rows()) {
     //print(row.getString("FL_DATE"));
     if(distance<=row.getDouble("DISTANCE") 
-      && (date==0 || ("1/"+date+"/2022 12:00:00 AM").equals(row.getString("FL_DATE")))                   //if statement and combination with string written by Hubert on March 27 11.00pm
-      && (flightNumber.equals("") || flightNumber.equals(row.getString("MKT_CARRIER") + 
-      row.getString("MKT_CARRIER_FL_NUM")))){
-        //println("distance: " + distance + ", date: " + date + ", flight number: " + flightNumber);
+      && (date==0 || ("1/"+date+"/2022 12:00:00 AM").equals(row.getString("FL_DATE")))                   
+      && (flightNumber.equals("") || flightNumber.equals(row.getString("MKT_CARRIER") + row.getString("MKT_CARRIER_FL_NUM"))) 
+      && (originAirport.equals("") || originAirport.equals(row.getString("ORIGIN"))) 
+      && (originCity.equals("") || originCity.equals(row.getString("ORIGIN_CITY_NAME"))) 
+      && (destAirport.equals("") || destAirport.equals(row.getString("DEST")))
+      && (destCity.equals("") || destCity.equals(row.getString("DEST_CITY_NAME")))){ //if statement and combination with string written by Hubert on March 27 11.00pm, edited on March 31 7.00pm
+      
+      //println("distance: " + distance + ", date: " + date + ", flight number: " + flightNumber);
       TableRow newRow = filteredTable.addRow();                                                        
       String dateTable = row.getString("FL_DATE");
       String[] dateParts = dateTable.split(" ");
       String insertDate = dateParts[0] + "\n" + dateParts[1] + dateParts[2];
       newRow.setString("Date", insertDate);
+      
       newRow.setString("Flight Number", row.getString("MKT_CARRIER") + 
-    row.getString("MKT_CARRIER_FL_NUM"));
+      row.getString("MKT_CARRIER_FL_NUM"));
       //newRow.setString("Origin Airport", originAirport);
       String origTable = row.getString("ORIGIN_CITY_NAME");
       String[] origParts = origTable.split(", ");
       String insertOrig = origParts[0] + ",\n" + origParts[1];
       newRow.setString("Origin City", insertOrig);
+      
       //newRow.setString("Dest Airport", row.getString("DEST"));
       String destTable = row.getString("DEST_CITY_NAME");
       String[] destParts = destTable.split(", ");
       String insertDest = destParts[0] + ",\n" + destParts[1];
       newRow.setString("Dest City", insertDest);
+      
       newRow.setString("Expected Dep", row.getString("CRS_DEP_TIME"));
       newRow.setString("Actual Dep", row.getString("DEP_TIME"));
       newRow.setString("Expected Arr", row.getString("CRS_ARR_TIME"));
