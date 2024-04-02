@@ -194,7 +194,7 @@ control.addButton("Submit")  // Created by Luke C on 25/03 at 4:00pm
         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
   
       
-              scrollbarPosX = showingAreaX+cellWidth*customHeaders.length;
+              //scrollbarPosX = showingAreaX+cellWidth*customHeaders.length;
               scrollbarPosY = showingAreaY;
               scrollbarWidth = 20;
               scrollbarHeight = showingAreaHeight;
@@ -315,8 +315,9 @@ void Submit() {  // Created by Luke C on 25/03 at 4:00pm, modified by Hubert on 
     }
     filterData(selectedDistance, selectedDate, enteredFlightNumber, selectedOriginAirport, 
       selectedOriginCity, selectedDestAirport, selectedDestCity);
-    drawHeaders(customHeaders);
-    drawTableData(filteredTable, startRow, visibleRows);
+      drawHeaders(filteredTable, customHeaders);
+      drawTableData(filteredTable, startRow, visibleRows, customHeaders);
+      scrollbarPosX = showingAreaX + getTotallength(filteredTable, customHeaders);
     drawScrollbar();
   }
 }
@@ -458,8 +459,9 @@ void draw(){
   background(200);
   switch(tableVariable){
     case 0:
-      drawHeaders(customHeaders);
-      drawTableData(filteredTable, startRow, visibleRows);
+      drawHeaders(filteredTable, customHeaders);
+      drawTableData(filteredTable, startRow, visibleRows, customHeaders);
+      scrollbarPosX = showingAreaX + getTotallength(filteredTable, customHeaders);
       drawScrollbar();
       break;
     case 1:
@@ -470,6 +472,12 @@ void draw(){
     case 2:
       generateHeatmap();
       break;
+    case 3:
+     pieChart.getFigures(filteredTable,chartVariable);
+     pieChart.calculateAngles(chartVariable);
+     pieChart.drawPieChart(chartVariable, showingAreaX,
+                             showingAreaY, showingAreaWidth, showingAreaHeight);  
+    
   }
  
 }
