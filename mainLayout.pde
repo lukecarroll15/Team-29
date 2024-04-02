@@ -1,6 +1,8 @@
 //mainLayout created by Hubert on 20 March 7.40pm (with some of the blocks of code taken from the other files to the setup method), edited on 27 March 11.00pm
 import controlP5.*;
 import g4p_controls.*;
+PImage errorImage;
+boolean showError = false;
 
 
 int tableVariable=0, chartVariable=0, showingAreaX=100, showingAreaY=250,
@@ -200,7 +202,9 @@ control.addButton("Submit")  // Created by Luke C on 25/03 at 4:00pm
               scrollbarHeight = showingAreaHeight;
               
               sliderPosY = scrollbarPosY;
-              sliderHeight = 50;        
+              sliderHeight = 50;   
+              
+errorImage = loadImage("Error.jpg");
 }
 
 /*public void controlEvent(ControlEvent theEvent){ different way to make buttons work
@@ -319,6 +323,14 @@ void Submit() {  // Created by Luke C on 25/03 at 4:00pm, modified by Hubert on 
       drawTableData(filteredTable, startRow, visibleRows, customHeaders);
       scrollbarPosX = showingAreaX + getTotallength(filteredTable, customHeaders);
     drawScrollbar();
+  }
+  
+  boolean dataFound = checkForData(filteredTable);
+  
+  if(!dataFound){
+   showError = true; 
+  }else{
+   showError = false; 
   }
 }
 
@@ -459,10 +471,16 @@ void draw(){
   background(200);
   switch(tableVariable){
     case 0:
+      if(!showError){
       drawHeaders(filteredTable, customHeaders);
       drawTableData(filteredTable, startRow, visibleRows, customHeaders);
       scrollbarPosX = showingAreaX + getTotallength(filteredTable, customHeaders);
       drawScrollbar();
+      }
+      else if (showError){
+       image(errorImage, showingAreaX + showingAreaWidth/2 - errorImage.width/2, 
+             showingAreaY + showingAreaHeight/2 - errorImage.height/2); 
+      }
       break;
     case 1:
       collectData();
@@ -480,4 +498,8 @@ void draw(){
     
   }
  
+}
+boolean checkForData(Table table) {
+
+  return table.getRowCount() > 0; 
 }
