@@ -3,6 +3,7 @@ import controlP5.*;
 import g4p_controls.*;
 PImage errorImage;
 boolean showError = false;
+boolean submitPressed = false;
 
 
 int tableVariable=0, chartVariable=0, showingAreaX=100, showingAreaY=250,
@@ -10,6 +11,8 @@ int tableVariable=0, chartVariable=0, showingAreaX=100, showingAreaY=250,
 String[] customHeaders;
 ArrayList<PVector> data;
 HashMap<String, Integer> table;
+boolean originSelectedOnly = false;
+boolean destinationSelectedOnly = false;
 
 void settings(){
   size(1000, 800);
@@ -38,36 +41,36 @@ ArrayList<String> destCityList;
 ArrayList<String> destAirportsList; 
 
 String[] top5DestinationCities;
-int[] top5DestinationFrequency;
+float[] top5DestinationFrequency;
 
 String[] top5OriginCities;
-int[] top5ArrivalsFrequency;
+float[] top5ArrivalsFrequency;
 
 String[] top5DestinationsCancelled;
-int[] top5CancelledFrequency;
+float[] top5CancelledFrequency;
 
 String[] top5DestinationsDiverted;
-int[] top5DivertedFrequency;
+float[] top5DivertedFrequency;
 
 String[] top5LongestFlightsCity;
-int[] top5LongestFlightsDistance;
+float[] top5LongestFlightsDistance;
 
 
 void setup(){
   top5DestinationCities = new String[5];
-  top5DestinationFrequency = new int[5];
+  top5DestinationFrequency = new float[5];
 
   top5OriginCities = new String[5];
-  top5ArrivalsFrequency = new int[5];
+  top5ArrivalsFrequency = new float[5];
 
   top5DestinationsCancelled = new String[5];
-  top5CancelledFrequency = new int[5];
+  top5CancelledFrequency = new float[5];
 
   top5DestinationsDiverted = new String[5];
-  top5DivertedFrequency = new int[5];
+  top5DivertedFrequency = new float[5];
 
   top5LongestFlightsCity = new String[5];
-  top5LongestFlightsDistance = new int[5];
+  top5LongestFlightsDistance = new float[5];
   
   originalTable = loadTable("flights_full.csv", "header");
   customHeaders = new String[]{"Date", "Flight Number",/* "Origin Airport",*/ 
@@ -220,12 +223,12 @@ void switchGraph(){
 
 void arrowUp(){
   chartVariable++;
-  if(chartVariable==3)chartVariable=0;
+  if(chartVariable==4)chartVariable=0;
 }
 
 void arrowDown(){
   chartVariable--;
-  if(chartVariable==-1)chartVariable=2;
+  if(chartVariable==-1)chartVariable=3;
 }
 void customiseDropdownList(DropdownList dropdown, String[] itemsArray) {
   dropdown.setItemHeight(20);
@@ -251,12 +254,17 @@ void customise(DropdownList date) // Created by Luke C on 25/03 at 4:00pm
 }
 
 void Submit() {  // Created by Luke C on 25/03 at 4:00pm, modified by Hubert on 31 March 7.45pm
+
   double selectedDistance = control.get(Slider.class,"Flight Distance").getValue();
   String enteredFlightNumber  = control.get(Textfield.class,"Flight Number").getText();
   int selectedDate = (int)control.get(DropdownList.class,"Select Date").getValue();
+  submitPressed = true;
   
   String selectedOriginAirport = "";
   if((int)control.get(DropdownList.class, "Origin Airport").getValue()!=0){ 
+    if (!destinationSelectedOnly) {
+      originSelectedOnly = true;
+    }
     selectedOriginAirport = airportsArray[(int)control.get(DropdownList.class, "Origin Airport").getValue()];
     top5LongestFlightsFrom(selectedOriginAirport);
     top5DestinationsDivertedFrom(selectedOriginAirport);
@@ -270,6 +278,9 @@ void Submit() {  // Created by Luke C on 25/03 at 4:00pm, modified by Hubert on 
     
   String selectedDestAirport = "";
   if((int)control.get(DropdownList.class, "Destination Airport").getValue()!=0){
+    if (!originSelectedOnly) {
+      destinationSelectedOnly = true;
+    }
     selectedDestAirport = destAirportsArray[(int)control.get(DropdownList.class, "Destination Airport").getValue()];
     top5ArrivalsTo(selectedDestAirport);
   }
@@ -351,7 +362,7 @@ void top5DestinationsFrom(String originAirport){ //method written by Hubert on 3
   String[][] top5Destinations = first5SelectionSort(destCityArray, frequencies);
   top5DestinationCities = new String[5];
   top5DestinationCities = top5Destinations[0];
-  top5DestinationFrequency = new int[5];
+  top5DestinationFrequency = new float[5];
   for(int i=0; i<5; i++){
     top5DestinationFrequency[i] = Integer.parseInt(top5Destinations[1][i]);
   }
@@ -374,7 +385,7 @@ void top5ArrivalsTo(String destAirport){ //method written by Hubert on 31 March 
   String[][] top5Arrivals = first5SelectionSort(originCityArray, frequencies);
   top5OriginCities = new String[5];
   top5OriginCities = top5Arrivals[0];
-  top5ArrivalsFrequency = new int[5];
+  top5ArrivalsFrequency = new float[5];
   for(int i=0; i<5; i++){
     top5ArrivalsFrequency[i] = Integer.parseInt(top5Arrivals[1][i]);
   }
@@ -397,7 +408,7 @@ void top5DestinationCancelledFrom(String originAirport){ //method written by Hub
   String[][] top5Cancelled = first5SelectionSort(destCityArray, frequencies);
   top5DestinationsCancelled = new String[5];
   top5DestinationsCancelled = top5Cancelled[0];
-  top5CancelledFrequency = new int[5];
+  top5CancelledFrequency = new float[5];
   for(int i=0; i<5; i++){
     top5CancelledFrequency[i] = Integer.parseInt(top5Cancelled[1][i]);
   }
@@ -420,7 +431,7 @@ void top5DestinationsDivertedFrom(String originAirport){ //method written by Hub
   String[][] top5Diverted = first5SelectionSort(destCityArray, frequencies);
   top5DestinationsDiverted = new String[5];
   top5DestinationsDiverted = top5Diverted[0];
-  top5DivertedFrequency = new int[5];
+  top5DivertedFrequency = new float[5];
   for(int i=0; i<5; i++){
     top5DivertedFrequency[i] = Integer.parseInt(top5Diverted[1][i]);
   }
@@ -446,7 +457,7 @@ void top5LongestFlightsFrom(String originAirport){ //method written by Hubert on
   String[][] top5Distances = first5SelectionSort(theLongestFlights, theLongestDistance);
   top5LongestFlightsCity = new String[5];
   top5LongestFlightsCity = top5Distances[0];
-  top5LongestFlightsDistance = new int[5];
+  top5LongestFlightsDistance = new float[5];
   for(int i=0; i<theLongestFlightsDistance.size() && i<5; i++){
     top5LongestFlightsDistance[i] = Integer.parseInt(top5Distances[1][i]);
   }
@@ -484,8 +495,10 @@ void draw(){
       break;
     case 1:
       collectData();
+      if (submitPressed) {
       barChart.draw(showingAreaX, showingAreaY, showingAreaWidth, 
         showingAreaHeight);
+      }
       break;
     case 2:
       generateHeatmap();
