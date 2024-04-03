@@ -33,35 +33,78 @@ BarChart barChart;
   print("done"); //print added to check how fast is loading from the file with all the flights
 }*/
 
-void collectData(){ // Function labelled by Hubert, written by Luke on 20/03/2024
-  String[] airports;
+void collectData(){ // Function labelled by Hubert, written by Luke on 20/03/2024. Updated by Luke on 03/04 at 16:00 to show barcharts dependent on user queries.
+  String[] categories;
   float[] data = new float[5];
-  switch(chartVariable) {  
-    case 0: // displays numberOfCancelledFlights by airport
-    airports = new String[] {"JFK", "LAX", "DCA", "FLL", "SEA" };
+  if (submitPressed) {
     
-    for (int i = 0; i < airports.length; i++) {
-      data[i] = getNumberOfCancelledFlightsByAirport(airports[i]);
+    if (originSelectedOnly) {
+    switch (chartVariable) {
+      case 0:
+      categories = top5DestinationCities;
+      data = top5DestinationFrequency;
+      createBarChart("Frequency", "Destination Airport", categories, data, true);
+      break;
+      
+      case 1:
+      categories = top5DestinationsCancelled;
+      data = top5CancelledFrequency;
+      createBarChart("Frequency", "Destinations Cancelled", categories, data, true);
+      break;
+      
+      case 2:
+      categories = top5DestinationsDiverted;
+      data = top5DivertedFrequency;
+      createBarChart("Frequency", "Destinations Diverted", categories, data, true);
+      break;
+      
+      case 3:
+      categories = top5LongestFlightsCity;
+      data = top5LongestFlightsDistance;
+      createBarChart("Length (miles)", "Destination", categories, data, true);
+      break;
     }
-    createBarChart("Number of Cancelled Flights", "Airport", airports, data, true);
-    break;
+    }
     
-    case 1: // displays numberOfFlights by departure airport
-    airports = new String[] {"JFK", "LAX", "ORD", "HNL", "SEA" };
-    for (int i = 0; i < airports.length; i++) {
-      data[i] = getNumberOfFlightsByDepAirport(airports[i]);
-    }
-    createBarChart("Number of Flights by Airport", "Airport", airports, data, true);
-    break;
-    
-    case 2: // displays number of flights per airline
-    airports = new String[] {"AA", "HA", "NK", "AS", "WN"};
-    for (int i = 0; i < airports.length; i++) {
-      data[i] = getNumberofFlightsByAirline(airports[i]);
-    }
-    createBarChart("Number of Flights by Airline", "Airline", airports, data, true);
-    break;
+    else if (destinationSelectedOnly) {
+      switch (chartVariable) {
+      case 0:
+      categories = top5OriginCities;
+      data = top5ArrivalsFrequency;
+      createBarChart("Frequency", "Origin", categories, data, true);
+      break;
+      }
+     
   }
+  
+  else { // Case where user hits submit without selecting destination || origin airport
+    categories = new String[] {"JFK", "LAX", "DCA", "FLL", "SEA" };
+    
+    switch (chartVariable) {
+      case 0:
+      for (int i = 0; i < categories.length; i++) {
+      data[i] = getNumberOfCancelledFlightsByAirport(categories[i]);
+    }
+    createBarChart("Number of Cancelled Flights", "Airport", categories, data, true);
+    break;
+    
+    case 1:
+    for (int i = 0; i < categories.length; i++) {
+      data[i] = getNumberOfFlightsByDepAirport(categories[i]);
+    }
+    createBarChart("Number of Flights by Airport", "Airport", categories, data, true);
+    break;
+    
+    case 2:
+    categories = new String[] {"AA", "HA", "NK", "AS", "WN"};
+    for (int i = 0; i < categories.length; i++) {
+      data[i] = getNumberofFlightsByAirline(categories[i]);
+    }
+    createBarChart("Number of Flights by Airline", "Airline", categories, data, true);
+    break;
+    }
+  }
+}
 }
 
 double getFlightDistance(String depAirport, String arrAirport) {  // Method written by Luke on 17/03/2024 at 4:00pm to assist with graphical display of data, edited by Hubert (7.40pm 20 March) so it would by compatible with the new way of saving data 
@@ -121,4 +164,14 @@ float[] data, boolean transposeAxes) {  // Method written by Luke. C on 20/03/20
   barChart.transposeAxes(transposeAxes);
   barChart.setValueAxisLabel(valueAxisLabel);
   barChart.setCategoryAxisLabel(categoryAxisLabel);
+}
+
+boolean isDataEmpty(float[] data) { // method written by Luke on 03/04 to prevent empty barcharts
+  int count = 0;
+  for (int i = 0; i < data.length; i++) {
+    if (data[i] == 0) count++;
+  }
+  
+  if (count >= 3) return true;
+  else return false;
 }
