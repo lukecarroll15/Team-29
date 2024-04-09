@@ -4,6 +4,7 @@ import g4p_controls.*;
 PImage errorImage;
 boolean showError = false;
 boolean submitPressed = false;
+PFont barChartFont;
 
 
 int tableVariable=0, chartVariable=0, showingAreaX=100, showingAreaY=250,
@@ -57,6 +58,8 @@ float[] top5LongestFlightsDistance;
 
 
 void setup(){
+  barChartFont = loadFont("Arial-Black.vlw");
+  
   top5DestinationCities = new String[5];
   top5DestinationFrequency = new float[5];
 
@@ -84,23 +87,11 @@ void setup(){
  
   filterData(3000,22,"","","","","");
  
-  dataHeatMap = new ArrayList<PVector>();
 
-  // Sample data generation random for now (Replace with flight data from the CSV file later)
-  for (int i = 0; i < 100000; i++) {
-    dataHeatMap.add(new PVector(floor(random(5, 55)), floor(random(0, 30))));
-  }
-
-  tableHeatMap = new HashMap<String, Integer>();
-
- 
-  for (PVector v : dataHeatMap) {
-    addOrUpdate(v);
-  }
   
   control = new ControlP5(this);
   
-    // Initialize ArrayLists to store unique airport names, origin cities, and destination cities
+  // Initialize ArrayLists to store unique airport names, origin cities, and destination cities
   airportsList = new ArrayList<String>();
   originCityList = new ArrayList<String>();
   destCityList = new ArrayList<String>();
@@ -149,7 +140,7 @@ void setup(){
   destAirportsList.remove(0);
   
   
-  // Add dropdown lists for Origin Airport,Dest Aiport, Origin City, and Destination City
+  // Add dropdown lists for Origin Airport, Dest Aiport, Origin City, and Destination City
   airportDropdown = control.addDropdownList("Origin Airport")
                           .setPosition(50, 150);
   customiseDropdownList(airportDropdown, airportsArray);
@@ -198,8 +189,6 @@ control.addButton("Submit")  // Created by Luke C on 25/03 at 4:00pm
       .setSize(80, 40)
         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
   
-      
-              //scrollbarPosX = showingAreaX+cellWidth*customHeaders.length;
               scrollbarPosY = showingAreaY;
               scrollbarWidth = 20;
               scrollbarHeight = showingAreaHeight;
@@ -210,15 +199,9 @@ control.addButton("Submit")  // Created by Luke C on 25/03 at 4:00pm
 errorImage = loadImage("Error.jpg");
 }
 
-/*public void controlEvent(ControlEvent theEvent){ different way to make buttons work
-  println(theEvent.getController().getName());
-  
-  //String name = theEvent.getController().getName();
-}*/
-
 void switchGraph(){
   tableVariable++;
-  if(tableVariable==3)tableVariable=0;
+  if(tableVariable==4)tableVariable=0;
 }
 
 void arrowUp(){
@@ -288,40 +271,6 @@ void Submit() {  // Created by Luke C on 25/03 at 4:00pm, modified by Hubert on 
   String selectedDestCity = "";
   if((int)control.get(DropdownList.class, "Destination City").getValue()!=0)
     selectedDestCity = destCityArray[(int)control.get(DropdownList.class, "Destination City").getValue()];
-
-  /*println("distance: " + selectedDistance + ",\ndate: " + selectedDate + 
-    ",\nflight number: " + enteredFlightNumber + ",\norigin airport: " + 
-    selectedOriginAirport + ",\norigin city: " + selectedOriginCity + 
-    ",\ndestination airport: " + selectedDestAirport + ",\ndestination city: " +
-    selectedDestCity);*/
-    
-  /*for(int i=0; i<top5DestinationFrequency.length; i++){
-    println(i + ". " + top5DestinationCities[i] + ", " + top5DestinationFrequency[i]);
-  }
-  
-  println();
-  
-  for(int i=0; i<top5ArrivalsFrequency.length; i++){
-    println(i + ". " + top5OriginCities[i] + ", " + top5ArrivalsFrequency[i]);
-  }
-  
-  println();
-  
-  for(int i=0; i<top5CancelledFrequency.length; i++){
-    println(i + ". " + top5DestinationsCancelled[i] + ", " + top5CancelledFrequency[i]);
-  }
-  
-  println();
-  
-  for(int i=0; i<top5DivertedFrequency.length; i++){
-    println(i + ". " + top5DestinationsDiverted[i] + ", " + top5DivertedFrequency[i]);
-  }
-  
-  println();
-  
-  for(int i=0; i<top5LongestFlightsDistance.length; i++){
-    println(i + ". " + top5LongestFlightsCity[i] + ", " + top5LongestFlightsDistance[i]);
-  }*/
 
   if(tableVariable==0){
     filteredTable = new Table();
@@ -443,15 +392,13 @@ void top5LongestFlightsFrom(String originAirport){ //method written by Hubert on
   for (TableRow row : originalTable.rows()) {
     if(originAirport.equals(row.getString("ORIGIN")))
     {
-      //println(row.getString("DEST_CITY_NAME"));
       if(!theLongestFlightsCity.contains(row.getString("DEST_CITY_NAME"))){
         theLongestFlightsDistance.add((int)row.getDouble("DISTANCE"));
         theLongestFlightsCity.add(row.getString("DEST_CITY_NAME"));
-        //println(row.getString("DEST_CITY_NAME"));
       }
     }
   }
-  //print(theLongestFlightsCity);
+  
   String[] theLongestFlights = theLongestFlightsCity.toArray(new String[0]);
   int[] theLongestDistance = theLongestFlightsDistance.stream().mapToInt(i -> i).toArray();
   String[][] top5Distances = first5SelectionSort(theLongestFlights, theLongestDistance);
@@ -479,8 +426,8 @@ String[][] first5SelectionSort(String[] destinations, int[] frequencies){ //sort
 }
 
 void draw(){
-  background(200);
-  switch(tableVariable){
+  background(0);
+  switch(tableVariable){ // Control graphical display of data through arrow up / down feature
     case 0:
       if(!showError){
       drawHeaders(filteredTable, customHeaders);
@@ -501,9 +448,6 @@ void draw(){
       }
       break;
     case 2:
-      generateHeatmap();
-      break;
-    case 3:
      pieChart.getFigures(filteredTable,chartVariable);
      pieChart.calculateAngles(chartVariable);
      pieChart.drawPieChart(chartVariable, showingAreaX,
