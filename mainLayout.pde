@@ -249,6 +249,7 @@ void Submit() {  // Created by Luke C on 25/03 at 4:00pm, modified by Hubert on 
       originSelectedOnly = true;
     }
     selectedOriginAirport = airportsArray[(int)control.get(DropdownList.class, "Origin Airport").getValue()];
+    pieChart.originAirport = selectedOriginAirport;
     top5LongestFlightsFrom(selectedOriginAirport);
     top5DestinationsDivertedFrom(selectedOriginAirport);
     top5DestinationCancelledFrom(selectedOriginAirport);
@@ -265,6 +266,7 @@ void Submit() {  // Created by Luke C on 25/03 at 4:00pm, modified by Hubert on 
       destinationSelectedOnly = true;
     }
     selectedDestAirport = destAirportsArray[(int)control.get(DropdownList.class, "Destination Airport").getValue()];
+    pieChart.destinationAirport = selectedDestAirport;
     top5ArrivalsTo(selectedDestAirport);
   }
   
@@ -449,7 +451,7 @@ void draw(){
       break;
     case 2:
      pieChart.getFigures(filteredTable,chartVariable);
-     pieChart.calculateAngles(chartVariable);
+     //pieChart.calculateAngles(chartVariable);
      pieChart.drawPieChart(chartVariable, showingAreaX,
                              showingAreaY, showingAreaWidth, showingAreaHeight);  
     
