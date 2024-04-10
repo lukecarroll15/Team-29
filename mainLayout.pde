@@ -142,50 +142,50 @@ void setup(){
   
   // Add dropdown lists for Origin Airport, Dest Aiport, Origin City, and Destination City
   airportDropdown = control.addDropdownList("Origin Airport")
-                          .setPosition(50, 150);
+                          .setPosition(50, 175);
   customiseDropdownList(airportDropdown, airportsArray);
 
   originCityDropdown = control.addDropdownList("Origin City")
-                          .setPosition(150, 150);
+                          .setPosition(150, 175);
   customiseDropdownList(originCityDropdown, originCityArray);
   
   
   destAirportDropdown = control.addDropdownList("Destination Airport")
-                          .setPosition(350, 150);
+                          .setPosition(350, 175);
   customiseDropdownList(destAirportDropdown, destAirportsArray);
 
   destCityDropdown = control.addDropdownList("Destination City")
-                          .setPosition(450, 150);
+                          .setPosition(450, 175);
   customiseDropdownList(destCityDropdown, destCityArray);
 
   
   switchGraph = control.addButton("switchGraph").setValue(1)
-    .setPosition(580, 200).setSize(100,40);
+    .setPosition(580, 175).setSize(100,40);
   arrowUp = control.addButton("arrowUp").setValue(2)
-    .setPosition(700,200).setSize(70,40);
+    .setPosition(700,175).setSize(70,40);
   arrowDown = control.addButton("arrowDown").setValue(3)
-    .setPosition(800,200).setSize(70,40);
+    .setPosition(800,175).setSize(70,40);
 
  dateSelector = control.addDropdownList("Select Date") // Created by Luke C on 25/03 at 4:00pm
-        .setPosition(100,20)
+        .setPosition(50,85)
         ;
         customise(dateSelector);
       
 flightNumberField = control.addTextfield("Flight Number")  // Created by Luke C on 25/03 at 4:00pm
      .setValue(0)
-     .setPosition(225, 20)
+     .setPosition(200, 85)
      .setSize(100,25)
      ;
      
 flightDistanceSlider = control.addSlider("Flight Distance")  // Created by Luke C on 25/03 at 4:00pm
-     .setPosition(350, 20)
+     .setPosition(350, 85)
      .setSize(200,25)
      .setRange(0,4000)
      .setValue(0)
      ;
 
 control.addButton("Submit")  // Created by Luke C on 25/03 at 4:00pm
-    .setPosition(700, 20)
+    .setPosition(800, 85)
       .setSize(80, 40)
         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
   
@@ -428,7 +428,9 @@ String[][] first5SelectionSort(String[] destinations, int[] frequencies){ //sort
 }
 
 void draw(){
+   
   background(0);
+  
   switch(tableVariable){ // Control graphical display of data through arrow up / down feature
     case 0:
       if(!showError){
@@ -456,7 +458,7 @@ void draw(){
                              showingAreaY, showingAreaWidth, showingAreaHeight);  
     
   }
- 
+
 }
 boolean checkForData(Table table) {
 
